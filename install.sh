@@ -25,8 +25,8 @@ EEOF
 
 set -e
 
-sudo e2fsck -f "${DEVICE_PATH}p2"
-sudo resize2fs "${DEVICE_PATH}p2"
+sudo e2fsck -f ${DEVICE_PATH}p2
+sudo resize2fs ${DEVICE_PATH}p2
 
 wget https://adaptive.u-aizu.ac.jp/gitlab/ome/ome2019
 wget https://adaptive.u-aizu.ac.jp/gitlab/ome/ome-doc
@@ -34,11 +34,11 @@ wget https://adaptive.u-aizu.ac.jp/gitlab/yshimmyo/ome-packages
 
 MOUNT_POINT=mount_point
 mkdir $MOUNT_POINT
-sudo mount /dev/loop12p2 $MOUNT_POINT
+sudo mount ${DEVICE_PATH}p2 $MOUNT_POINT
 cp -r ome-doc ome-packages $MOUNT_POINT/home/pi
 rm -rf $MOUNT_POINT/home/pi/ome
 cp -r ome2019 $MOUNT_POINT/home/pi/ome
 
-sudo umount /dev/loop12p2 $MOUNT_POINT
-sudo losetup -d /dev/loop12
+sudo umount $MOUNT_POINT
+sudo losetup -d $DEVICE_PATH
 rm -rf $MOUNT_POINT
