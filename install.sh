@@ -21,7 +21,8 @@ p
 98304
 13671874
 w
-EEOF 
+EEOF
+
 #set -e
 
 sudo e2fsck -f "${DEVICE_PATH}p2"
