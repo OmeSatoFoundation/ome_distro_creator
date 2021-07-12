@@ -10,8 +10,7 @@ export DEVICE_PATH=`sudo losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
 
 
-set +e
-sudo fdisk $DEVICE_PATH <<EEOF
+sudo fdisk - w never -W never $DEVICE_PATH <<EEOF
 p
 d
 2
@@ -22,8 +21,6 @@ p
 13671874
 w
 EEOF
-
-set -e
 
 sudo e2fsck -f ${DEVICE_PATH}p2
 sudo resize2fs ${DEVICE_PATH}p2
