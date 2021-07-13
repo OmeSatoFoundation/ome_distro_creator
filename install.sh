@@ -10,9 +10,6 @@ truncate -s 9500MB 2018-04-18-raspbian-stretch.img
 DEVICE_PATH=`sudo losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
 
-sudo growpart $DEVICE_PATH 2
-sudo e2fsck -f ${DEVICE_PATH}p2 && sudo resize2fs ${DEVICE_PATH}p2 
-
 sudo fdisk -w never -W never $DEVICE_PATH <<EEOF
 p
 d
