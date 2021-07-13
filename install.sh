@@ -5,27 +5,12 @@ if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s 10000MB 2018-04-18-raspbian-stretch.img
+truncate -s 9500MB 2018-04-18-raspbian-stretch.img
 
 DEVICE_PATH=`sudo losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
 
-set +e
-sudo fdisk $DEVICE_PATH <<EEOF
-p
-d
-2
-n
-p
-2
-98304
-
-w
-EEOF
-
-set -e
-
-
+sudo growpart $DEVICE_PATH 2
 sudo e2fsck -f ${DEVICE_PATH}p2 && sudo resize2fs ${DEVICE_PATH}p2 
 
 if [ ! -d ome2019 ]; then
