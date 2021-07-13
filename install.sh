@@ -28,9 +28,11 @@ fi
 MOUNT_POINT=mount_point
 mkdir $MOUNT_POINT
 sudo mount ${DEVICE_PATH}p2 $MOUNT_POINT
-cp -r ome-doc ome-packages $MOUNT_POINT/home/pi
+rsync -avP ome-doc $MOUNT_POINT/home/pi --exclude .git
+rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
 rm -rf $MOUNT_POINT/home/pi/ome
-cp -r ome2019 $MOUNT_POINT/home/pi/ome
+rsync -avP ome2019 $MOUNT_POINT/home/pi --exclude .git
+mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
 sudo umount $MOUNT_POINT
 sudo losetup -d $DEVICE_PATH
