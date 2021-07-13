@@ -13,7 +13,7 @@ echo $DEVICE_PATH
 sudo growpart $DEVICE_PATH 2
 sudo e2fsck -f ${DEVICE_PATH}p2 && sudo resize2fs ${DEVICE_PATH}p2 
 
-sudo fdisk - w never -W never $DEVICE_PATH <<EEOF
+sudo fdisk -w never -W never $DEVICE_PATH <<EEOF
 p
 d
 2
