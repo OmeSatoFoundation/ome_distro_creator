@@ -1,14 +1,17 @@
 #!/bin/bash
 set -eux
 
-bash ./clean.sh
-#wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
+if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
+    wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
+fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s 7000MB 2018-04-18-raspbian-stretch.img
+truncate -s 9500MB 2018-04-18-raspbian-stretch.img
 
-export DEVICE_PATH=`sudo losetup -P --show -f 2018-04-18-raspbian-stretch.img`
+DEVICE_PATH=`sudo losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
 
+sudo growpart $DEVICE_PATH 2
+sudo e2fsck -f ${DEVICE_PATH}p2 && sudo resize2fs ${DEVICE_PATH}p2 
 
 sudo fdisk - w never -W never $DEVICE_PATH <<EEOF
 p
@@ -25,9 +28,17 @@ EEOF
 sudo e2fsck -f ${DEVICE_PATH}p2
 sudo resize2fs ${DEVICE_PATH}p2
 
-wget https://adaptive.u-aizu.ac.jp/gitlab/ome/ome2019
-wget https://adaptive.u-aizu.ac.jp/gitlab/ome/ome-doc
-wget https://adaptive.u-aizu.ac.jp/gitlab/yshimmyo/ome-packages
+if [ ! -d ome2019 ]; then
+    git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git
+fi
+
+if [ ! -d ome-doc ]; then
+    git clone git@adaptive.u-aizu.ac.jp:ome/ome-doc.git
+fi
+
+if [ ! -d ome-packages ]; then
+    git clone git@adaptive.u-aizu.ac.jp:yshimmyo/ome-packages.git
+fi
 
 MOUNT_POINT=mount_point
 mkdir $MOUNT_POINT
