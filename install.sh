@@ -5,7 +5,7 @@ if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s $((9500*1000000/512*512)) 2018-04-18-raspbian-stretch.img
+truncate -s $((6100*1000000/512*512)) 2018-04-18-raspbian-stretch.img
 
 DEVICE_PATH=`losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
@@ -40,6 +40,7 @@ rsync -avP ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
+exit
 
 umount $MOUNT_POINT
 losetup -d $DEVICE_PATH
