@@ -5,12 +5,20 @@ if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s 9500MB 2018-04-18-raspbian-stretch.img
+truncate -s $((9500*1000000/512*512)) 2018-04-18-raspbian-stretch.img
 
 DEVICE_PATH=`losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
 
+set +e
 growpart $DEVICE_PATH 2
+EXITCODE=$?
+if [ $EXITCODE -ne 0 ] && [ $EXITCODE -ne 1 ]; then
+  echo "growpart unexpectedly exited."
+  exit $EXITCODE
+fi
+set -e
+
 e2fsck -f ${DEVICE_PATH}p2 && resize2fs ${DEVICE_PATH}p2 
 
 if [ ! -d ome2019 ]; then
