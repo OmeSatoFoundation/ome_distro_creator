@@ -16,5 +16,5 @@ $ ssh-add ~/.ssh/id_rsa # 秘密鍵への path は適当なものに変更する
 ### 設定されていればパスワードを入力 ###
 
 # イメージアーカイブ作成
-$ sudo ./install.sh
+$ sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID ./install.sh
 ```
