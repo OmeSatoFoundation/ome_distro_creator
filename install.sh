@@ -34,7 +34,7 @@ if [ ! -d ome-packages ]; then
 fi
 
 MOUNT_POINT=mount_point
-mkdir $MOUNT_POINT
+mkdir -p $MOUNT_POINT
 mount ${DEVICE_PATH}p2 $MOUNT_POINT
 rsync -avP ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
@@ -51,7 +51,7 @@ umount_sysfds () {
   for i in $(echo $MOUNT_SYSFD_SRCS | wc -w); do
     SRC=$(echo $MOUNT_SYSFD_SRCS | cut -d " " -f $i)
     TARGET=$(echo $MOUNT_SYSFD_TARGETS | cut -d " " -f $i)
-    umount -t $SRC $SRC $TARGET || /bin/true
+    umount $TARGET || /bin/true
   done
 }
 
@@ -67,8 +67,8 @@ cp -f /etc/hosts $MOUNT_POINT/etc/
 cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
 cp /usr/bin/qemu-arm-static $MOUNT_POINT/usr/bin/
 
-chroot $MOUNT_POINT 'apt update'
-chroot $MOUNT_POINT 'apt install /home/pi/ome-packages/*.deb'
+chroot $MOUNT_POINT apt 'update'
+chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt install -y /home/pi/ome-packages/*.deb"
 
 umount_sysfds
 
