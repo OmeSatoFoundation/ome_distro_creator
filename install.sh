@@ -39,9 +39,9 @@ mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
 sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
 
 mount ${DEVICE_PATH}p2 $MOUNT_POINT
-rsync -auvP ome-doc $MOUNT_POINT/home/pi --exclude .git
-rsync -auvP ome-packages $MOUNT_POINT/home/pi --exclude .git
-rsync -auvP ome2019 $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP --chown=1000:1000 ome-doc $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP --chown=1000:1000 ome-packages $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP --chown=1000:1000 ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
 # Install package dependencies
