@@ -36,9 +36,9 @@ fi
 MOUNT_POINT=mount_point
 mkdir -p $MOUNT_POINT
 mount ${DEVICE_PATH}p2 $MOUNT_POINT
-rsync -avP ome-doc $MOUNT_POINT/home/pi --exclude .git
-rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
-rsync -avP ome2019 $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP ome-doc $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP ome-packages $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
 # Install package dependencies
@@ -67,7 +67,7 @@ cp -f /etc/hosts $MOUNT_POINT/etc/
 cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
 cp /usr/bin/qemu-arm-static $MOUNT_POINT/usr/bin/
 
-chroot $MOUNT_POINT apt 'update'
+chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt update"
 chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt install -y /home/pi/ome-packages/*.deb"
 
 umount_sysfds
