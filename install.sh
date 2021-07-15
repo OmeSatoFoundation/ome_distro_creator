@@ -61,10 +61,11 @@ for i in $(echo $MOUNT_SYSFD_SRCS | wc -w); do
   mount -t $SRC $SRC $TARGET
 done
 
-/bin/cp -f $MOUNT_POINT/etc/hosts $MOUNT_POINT/etc/hosts.org
-/bin/cp -f $MOUNT_POINT/etc/resolv.conf $MOUNT_POINT/etc/resolv.conf.org
-/bin/cp -f /etc/hosts $MOUNT_POINT/etc/
-/bin/cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
+cp -f $MOUNT_POINT/etc/hosts $MOUNT_POINT/etc/hosts.org
+cp -f $MOUNT_POINT/etc/resolv.conf $MOUNT_POINT/etc/resolv.conf.org
+cp -f /etc/hosts $MOUNT_POINT/etc/
+cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
+cp /usr/bin/qemu-arm-static $MOUNT_POINT/usr/bin/
 
 chroot $MOUNT_POINT 'apt update'
 chroot $MOUNT_POINT 'apt install /home/pi/ome-packages/*.deb'
