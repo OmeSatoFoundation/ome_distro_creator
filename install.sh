@@ -40,7 +40,6 @@ rsync -avP ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
-exit
 
 umount $MOUNT_POINT
 losetup -d $DEVICE_PATH
