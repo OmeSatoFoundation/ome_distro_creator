@@ -41,6 +41,36 @@ rsync -avP ome-packages $MOUNT_POINT/home/pi --exclude .git
 rsync -avP ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
+# Install package dependencies
+MOUNT_SYSFD_TARGETS="$MOUNT_POINT/proc $MOUNT_POINT/sys $MOUNT_POINT/dev $MOUNT_POINT/dev/shm $MOUNT_POINT/dev/pts"
+MOUNT_SYSFD_SRCS="proc sysfs devtmpfs tmpfs devpts"
+
+umount_sysfds () {
+  /bin/cp -f $MOUNT_POINT/etc/hosts.org $MOUNT_POINT/etc/hosts || /bin/true
+  /bin/cp -f $MOUNT_POINT/etc/resolv.conf.org $MOUNT_POINT/etc/resolv.conf || /bin/true
+  for i in $(echo $MOUNT_SYSFD_SRCS | wc -w); do
+    SRC=$(echo $MOUNT_SYSFD_SRCS | cut -d " " -f $i)
+    TARGET=$(echo $MOUNT_SYSFD_TARGETS | cut -d " " -f $i)
+    umount -t $SRC $SRC $TARGET || /bin/true
+  done
+}
+
+for i in $(echo $MOUNT_SYSFD_SRCS | wc -w); do
+  SRC=$(echo $MOUNT_SYSFD_SRCS | cut -d " " -f $i)
+  TARGET=$(echo $MOUNT_SYSFD_TARGETS | cut -d " " -f $i)
+  mount -t $SRC $SRC $TARGET
+done
+
+/bin/cp -f $MOUNT_POINT/etc/hosts $MOUNT_POINT/etc/hosts.org
+/bin/cp -f $MOUNT_POINT/etc/resolv.conf $MOUNT_POINT/etc/resolv.conf.org
+/bin/cp -f /etc/hosts $MOUNT_POINT/etc/
+/bin/cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
+
+chroot $MOUNT_POINT 'apt update'
+chroot $MOUNT_POINT 'apt install /home/pi/ome-packages/*.deb'
+
+umount_sysfds
+
 umount $MOUNT_POINT
 losetup -d $DEVICE_PATH
 rm -rf $MOUNT_POINT
