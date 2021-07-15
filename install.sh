@@ -34,7 +34,10 @@ if [ ! -d ome-packages ]; then
 fi
 
 MOUNT_POINT=mount_point
-mkdir -p $MOUNT_POINT
+mkdir -p $MOUNT_POINT/boot
+mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
+sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
+
 mount ${DEVICE_PATH}p2 $MOUNT_POINT
 rsync -auvP ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -auvP ome-packages $MOUNT_POINT/home/pi --exclude .git
