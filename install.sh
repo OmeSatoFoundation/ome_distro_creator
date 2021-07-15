@@ -35,10 +35,11 @@ fi
 
 MOUNT_POINT=mount_point
 mkdir -p $MOUNT_POINT/boot
-mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
-sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
 
 mount ${DEVICE_PATH}p2 $MOUNT_POINT
+mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
+
+sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
 rsync -auvP --chown=1000:1000 ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -auvP --chown=1000:1000 ome-packages $MOUNT_POINT/home/pi --exclude .git
 rsync -auvP --chown=1000:1000 ome2019 $MOUNT_POINT/home/pi --exclude .git
@@ -75,6 +76,7 @@ chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt install -y /home/pi/ome-packages
 
 umount_sysfds
 
+umount $MOUNT_POINT/boot
 umount $MOUNT_POINT
 losetup -d $DEVICE_PATH
 rm -rf $MOUNT_POINT
