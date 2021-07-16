@@ -5,7 +5,7 @@ if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s $((6500000000/512*512)) 2018-04-18-raspbian-stretch.img
+truncate -s $((7000000000/512*512)) 2018-04-18-raspbian-stretch.img
 
 DEVICE_PATH=`losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
