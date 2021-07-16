@@ -75,7 +75,7 @@ LOCALE_CONF="LANG=ja_JP.UTF-8 LANGUAGE=ja_JP:en LC_CTYPE=ja_JP.UTF-8 LC_NUMERIC=
 
 chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt update"
 chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt install -y /home/pi/ome-packages/*.deb"
-chroot $MOUNT_POINT sh -c "apt install xdg-user-dirs-gtk ; LANG=C xdg-user-dirs-gtk-update --force
+chroot $MOUNT_POINT sh -c "apt install xdg-user-dirs-gtk ; LANG=C xdg-user-dirs-gtk-update --force"
 
 # These are not necessary because raspberry pi does not actually launch and initial resize does not execute.
 # sed -i 's;$; init=/usr/lib/raspi-config/init_resize.sh;g' ${MOUNT_POINT}/boot/cmdline.txt
