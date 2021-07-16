@@ -109,6 +109,8 @@ EEOF
 
 TARGET_FILENAME=itschool-raspbian-$(date "+%Y-%m-%dT%H.%M.%S").img
 # truncate -s ${FINAL_SIZE} $TARGET_FILENAME
+COUNT=$(fdisk -l ${DEVICE_PATH} | grep -i 'Disk /dev' | sed 's/^.* \([0-9]\+\) sectors$/\1/g')
+BS=$(fdisk -l ${DEVICE_PATH} | grep -i 'Units: ' | sed 's/^.* \([0-9]\+\) bytes$/\1/g')
 dd if=2018-04-18-raspbian-stretch.img of=${TARGET_FILENAME} bs=$BS count=$COUNT status=progress
 
 losetup -d $DEVICE_PATH
