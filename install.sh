@@ -71,8 +71,10 @@ cp -f /etc/hosts $MOUNT_POINT/etc/
 cp -f /etc/resolv.conf $MOUNT_POINT/etc/resolv.conf
 cp /usr/bin/qemu-arm-static $MOUNT_POINT/usr/bin/
 
-chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt update"
-chroot $MOUNT_POINT sh -c "LANG=ja_JP.UTF-8 apt install -y /home/pi/ome-packages/*.deb"
+LOCALE_CONF="LANG=ja_JP.UTF-8 LANGUAGE=ja_JP:en LC_CTYPE=ja_JP.UTF-8 LC_NUMERIC=ja_JP.UTF-8 LC_TIME=ja_JP.UTF-8 LC_COLLATE=ja_JP.UTF-8 LC_MONETARY=ja_JP.UTF-8 LC_MESSAGES=ja_JP.UTF-8 LC_PAPER=ja_JP.UTF-8 LC_NAME=ja_JP.UTF-8 LC_ADDRESS=ja_JP.UTF-8 LC_TELEPHONE=ja_JP.UTF-8 LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=ja_JP.UTF-8 LC_ALL=ja_JP.UTF-8"
+
+chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt update"
+chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt install -y /home/pi/ome-packages/*.deb"
 
 umount_sysfds
 
