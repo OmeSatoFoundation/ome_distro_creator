@@ -31,6 +31,7 @@ fi
 
 if [ ! -d ome-packages ]; then
     git clone git@adaptive.u-aizu.ac.jp:yshimmyo/ome-packages.git
+    make -C ome-packages
 fi
 
 MOUNT_POINT=mount_point
@@ -41,7 +42,8 @@ mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
 
 sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
 rsync -auvP --chown=1000:1000 ome-doc $MOUNT_POINT/home/pi --exclude .git
-rsync -auvP --chown=1000:1000 ome-packages $MOUNT_POINT/home/pi --exclude .git
+rsync -auvP --chown=1000:1000 ome-packages/obj $MOUNT_POINT/home/pi --exclude .git
+mv $MOUNT_POINT/home/pi/obj $MOUNT_POINT/home/pi/ome-packages
 rsync -auvP --chown=1000:1000 ome2019 $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
