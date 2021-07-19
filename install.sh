@@ -5,7 +5,7 @@ if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
 unzip 2018-04-18-raspbian-stretch.zip
-truncate -s $((7000*1000000/512*512)) 2018-04-18-raspbian-stretch.img
+truncate -s $((7800000000/512*512)) 2018-04-18-raspbian-stretch.img
 
 DEVICE_PATH=`losetup -P --show -f 2018-04-18-raspbian-stretch.img`
 echo $DEVICE_PATH
@@ -75,10 +75,40 @@ LOCALE_CONF="LANG=ja_JP.UTF-8 LANGUAGE=ja_JP:en LC_CTYPE=ja_JP.UTF-8 LC_NUMERIC=
 
 chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt update"
 chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt install -y /home/pi/ome-packages/*.deb"
+chroot $MOUNT_POINT sh -c "apt install xdg-user-dirs-gtk ; LANG=C xdg-user-dirs-gtk-update --force"
+
+# These are not necessary because raspberry pi does not actually launch and initial resize does not execute.
+# sed -i 's;$; init=/usr/lib/raspi-config/init_resize.sh;g' ${MOUNT_POINT}/boot/cmdline.txt
+# cp assets/resize2fs_once ${MOUNT_POINT}/etc/init.d/
+# ln -s ../init.d/resize2fs_once ${MOUNT_POINT}/etc/rc3.d/S01resize2fs_once
 
 umount_sysfds
 
+
 umount $MOUNT_POINT/boot
 umount $MOUNT_POINT
+
+# Truncate filesystem and partition
+e2fsck -f ${DEVICE_PATH}p2 && resize2fs -M ${DEVICE_PATH}p2
+P2_BLOCK_COUNT=$(dumpe2fs -h ${DEVICE_PATH}p2 2>/dev/null | grep "Block count" | awk -F':' -e '{print $2}' | xargs)
+P2_BLOCK_SIZE=$(dumpe2fs -h ${DEVICE_PATH}p2 2>/dev/null | grep "Block size" | awk -F':' -e '{print $2}' | xargs)
+
+fdisk -w never -W never ${DEVICE_PATH} <<EEOF
+d
+2
+n
+p
+2
+98304
+$((98304 + (P2_BLOCK_COUNT*P2_BLOCK_SIZE/512)))
+EEOF
+# dumpe2fs -h ${DEVICE_PATH}p2 | grep Block # to show shrinked filesystem size
+
+TARGET_FILENAME=itschool-raspbian-$(date "+%Y-%m-%dT%H.%M.%S").img
+# truncate -s ${FINAL_SIZE} $TARGET_FILENAME
+COUNT=$(fdisk -l ${DEVICE_PATH} | grep -i 'Disk /dev' | sed 's/^.* \([0-9]\+\) sectors$/\1/g')
+BS=$(fdisk -l ${DEVICE_PATH} | grep -i 'Units: ' | sed 's/^.* \([0-9]\+\) bytes$/\1/g')
+dd if=2018-04-18-raspbian-stretch.img of=${TARGET_FILENAME} bs=$BS count=$COUNT status=progress
+
 losetup -d $DEVICE_PATH
 rm -rf $MOUNT_POINT
