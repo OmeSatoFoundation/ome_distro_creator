@@ -1,6 +1,27 @@
 #!/bin/bash
 set -eux
 
+usage_exit() {
+  echo "Usage: $0 ome2019_branch_name" 1>&2
+  exit 1
+}
+
+while getopts h OPT
+do
+  case $OPT in
+    h) usage_exit
+      ;;
+    \?) usage_exit
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+if [ $# -ne 1 ]; then
+  usage_exit
+fi
+OME2019_BRANCH_NAME=$1
+
 if [ ! -e 2018-04-18-raspbian-stretch.zip ]; then
     wget http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2018-04-19/2018-04-18-raspbian-stretch.zip
 fi
@@ -22,7 +43,7 @@ set -e
 e2fsck -f ${DEVICE_PATH}p2 && resize2fs ${DEVICE_PATH}p2 
 
 if [ ! -d ome2019 ]; then
-    git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git
+    git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git -b $OME2019_BRANCH_NAME
 fi
 
 if [ ! -d ome-doc ]; then
