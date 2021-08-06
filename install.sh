@@ -43,7 +43,7 @@ set -e
 e2fsck -f ${DEVICE_PATH}p2 && resize2fs ${DEVICE_PATH}p2 
 
 if [ ! -d ome2019 ]; then
-    git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git -b $OME2019_BRANCH_NAME
+    git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git -b $OME2019_BRANCH_NAME --recurse-submodules
 fi
 
 if [ ! -d ome-doc ]; then
@@ -100,6 +100,8 @@ chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt update"
 chroot $MOUNT_POINT sh -c "$LOCALE_CONF apt install -y /home/pi/ome-packages/*.deb"
 chroot $MOUNT_POINT sh -c "apt install xdg-user-dirs-gtk ; LANG=C xdg-user-dirs-gtk-update --force"
 chroot $MOUNT_POINT su -c 'xdg-user-dirs-update' pi
+chroot $MOUNT_POINT sh -c "cd /home/pi/ome/OpenHSP; make -f makefile.raspbian"
+chroot $MOUNT_POINT sh -c "rsync -a /home/pi/ome/OpenHSP/ /home/pi/ome/bin"
 
 # These are not necessary because raspberry pi does not actually launch and initial resize does not execute.
 # sed -i 's;$; init=/usr/lib/raspi-config/init_resize.sh;g' ${MOUNT_POINT}/boot/cmdline.txt
