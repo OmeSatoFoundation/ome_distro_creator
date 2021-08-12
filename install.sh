@@ -8,7 +8,7 @@ usage_exit() {
   echo "        forces resize2fs to proceed with the filesystem resize operation,"
   echo "        overriding some safety checks which resize2fs normally enforces."
   echo "  -h"
-  echo "        display this help and exit
+  echo "        display this help and exit"
   exit 1
 }
 
@@ -124,6 +124,7 @@ e2fsck -f ${DEVICE_PATH}p2
 if [ $RESIZE2FS_FORCE ]; then
   E2FS_P2_BLOCK_SIZE=$(e2fsck -fn /dev/loop1p2 2>/dev/null | tail -n 1 | sed -E 's;.* ([0-9]+)/[0-9]+ blocks$;\1;')
   resize2fs -f ${DEVICE_PATH}p2 $E2FS_P2_BLOCK_SIZE
+  e2fsck -fn ${DEVICE_PATH}p2
 else
   resize2fs -M ${DEVICE_PATH}p2
 fi
