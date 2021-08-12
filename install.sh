@@ -2,19 +2,29 @@
 set -eux
 
 usage_exit() {
-  echo "Usage: $0 ome2019_branch_name" 1>&2
+  echo "Usage: $0 [-hf] ome2019_branch_name" 1>&2
+  echo ""
+  echo "  -f"
+  echo "        forces resize2fs to proceed with the filesystem resize operation,"
+  echo "        overriding some safety checks which resize2fs normally enforces."
+  echo "  -h"
+  echo "        display this help and exit
   exit 1
 }
 
+RESIZE2FS_FORCE=
 while getopts h OPT
 do
   case $OPT in
+    f) RESIZE2FS_FORCE=-f
+      ;;
     h) usage_exit
       ;;
     \?) usage_exit
       ;;
   esac
 done
+
 
 shift $((OPTIND - 1))
 if [ $# -ne 1 ]; then
@@ -109,8 +119,14 @@ umount_sysfds
 umount $MOUNT_POINT/boot
 umount $MOUNT_POINT
 
+e2fsck -f ${DEVICE_PATH}p2
 # Truncate filesystem and partition
-e2fsck -f ${DEVICE_PATH}p2 && resize2fs -M ${DEVICE_PATH}p2
+if [ $RESIZE2FS_FORCE ]; then
+  E2FS_P2_BLOCK_SIZE=$(e2fsck -fn /dev/loop1p2 2>/dev/null | tail -n 1 | sed -E 's;.* ([0-9]+)/[0-9]+ blocks$;\1;')
+  resize2fs -f ${DEVICE_PATH}p2 $E2FS_P2_BLOCK_SIZE
+else
+  resize2fs -M ${DEVICE_PATH}p2
+fi
 P2_BLOCK_COUNT=$(dumpe2fs -h ${DEVICE_PATH}p2 2>/dev/null | grep "Block count" | awk -F':' -e '{print $2}' | xargs)
 P2_BLOCK_SIZE=$(dumpe2fs -h ${DEVICE_PATH}p2 2>/dev/null | grep "Block size" | awk -F':' -e '{print $2}' | xargs)
 
