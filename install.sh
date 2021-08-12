@@ -46,10 +46,6 @@ if [ ! -d ome2019 ]; then
     git clone git@adaptive.u-aizu.ac.jp:ome/ome2019.git -b $OME2019_BRANCH_NAME --recurse-submodules
 fi
 
-if [ ! -d ome-doc ]; then
-    git clone git@adaptive.u-aizu.ac.jp:ome/ome-doc.git
-fi
-
 if [ ! -d ome-packages ]; then
     git clone git@adaptive.u-aizu.ac.jp:yshimmyo/ome-packages.git
     make -C ome-packages
@@ -62,7 +58,6 @@ mount ${DEVICE_PATH}p2 $MOUNT_POINT
 mount ${DEVICE_PATH}p1 $MOUNT_POINT/boot
 
 sed $MOUNT_POINT/boot/config.txt -i -e 's/#hdmi_force_hotplug=1/hdmi_force_hotplug=1/g'
-rsync -auvP --chown=1000:1000 ome-doc $MOUNT_POINT/home/pi --exclude .git
 rsync -auvP --chown=1000:1000 ome-packages/obj $MOUNT_POINT/home/pi --exclude .git
 mv $MOUNT_POINT/home/pi/obj $MOUNT_POINT/home/pi/ome-packages
 rsync -auvP --chown=1000:1000 ome2019 $MOUNT_POINT/home/pi --exclude .git --exclude 05 --exclude 06 --exclude 07 --exclude 08 --exclude .gitlab/issue_templates/テスト報告.md
