@@ -6,9 +6,12 @@ usage_exit() {
   exit 1
 }
 
-while getopts h OPT
+OME_PACKAGES_BRANCH=master
+while getopts hp: OPT
 do
   case $OPT in
+    p) OME_PACKAGES_BRANCH=$OPTARG
+      ;;
     h) usage_exit
       ;;
     \?) usage_exit
@@ -47,7 +50,7 @@ if [ ! -d ome2019 ]; then
 fi
 
 if [ ! -d ome-packages ]; then
-    git clone git@adaptive.u-aizu.ac.jp:yshimmyo/ome-packages.git
+    git clone git@adaptive.u-aizu.ac.jp:yshimmyo/ome-packages.git -b $OME_PACKAGES_BRANCH
     make -C ome-packages
 fi
 
