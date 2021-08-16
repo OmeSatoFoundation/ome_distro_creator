@@ -7,7 +7,7 @@ usage_exit() {
 }
 
 OME_PACKAGES_BRANCH=master
-while getopts h:p OPT
+while getopts hp: OPT
 do
   case $OPT in
     p) OME_PACKAGES_BRANCH=$OPTARG
