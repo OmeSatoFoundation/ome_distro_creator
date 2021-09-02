@@ -6,4 +6,4 @@ umount -R $MOUNT_POINT
 rm -rf $BASEIMAGE.zip $BASEIMAGE.img
 rm -rf ome2019 ome-doc ome-packages
 
-# TODO: paser `losetup` and detach loop devices related to $BASEIMAGE.img
+# TODO: parse `losetup` and detach loop devices related to $BASEIMAGE.img
