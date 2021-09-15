@@ -66,6 +66,11 @@ mv $MOUNT_POINT/home/pi/obj $MOUNT_POINT/home/pi/ome-packages
 rsync -auvP --chown=1000:1000 ome2019 $MOUNT_POINT/home/pi --exclude .git --exclude 05 --exclude 06 --exclude 07 --exclude 08 --exclude .gitlab/issue_templates/テスト報告.md
 mv $MOUNT_POINT/home/pi/ome2019 $MOUNT_POINT/home/pi/ome
 
+# Add version information
+git -C ome2019/ rev-parse HEAD > $MOUNT_POINT/etc/itschool_distro_version_info
+git -C ome-packages/ rev-parse HEAD >> $MOUNT_POINT/etc/itschool_distro_version_info
+git rev-parse HEAD >> $MOUNT_POINT/etc/itschool_distro_version_info
+
 # Install package dependencies
 MOUNT_SYSFD_TARGETS="$MOUNT_POINT/proc $MOUNT_POINT/sys $MOUNT_POINT/dev $MOUNT_POINT/dev/shm $MOUNT_POINT/dev/pts"
 MOUNT_SYSFD_SRCS="proc sysfs devtmpfs tmpfs devpts"
